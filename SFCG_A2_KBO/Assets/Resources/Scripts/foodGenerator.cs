@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Pathfinding;
 
 public class foodGenerator : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class foodGenerator : MonoBehaviour
 
      List<positionRecord> allTheFood;
 
-
+    GridGraph gg;
     snakeGenerator sn;
 
 
@@ -59,7 +60,7 @@ public class foodGenerator : MonoBehaviour
     {
         while (true)
         {
-            if (getVisibleFood() < 6)
+            if (getVisibleFood() < 6 )
             {
                 yield return new WaitForSeconds(Random.Range(1f, 3f));
 
@@ -75,7 +76,7 @@ public class foodGenerator : MonoBehaviour
 
                 foodPosition.Position = randomLocation;
 
-                if (!allTheFood.Contains(foodPosition) && !sn.hitTail(foodPosition.Position, sn.snakelength) )
+                if (!allTheFood.Contains(foodPosition) && !sn.hitTail(foodPosition.Position, sn.snakelength) && (gg.GetNode((int)randomX, (int)randomY).Walkable))
 
                 {
 
@@ -117,6 +118,7 @@ public class foodGenerator : MonoBehaviour
         sn = Camera.main.GetComponent<snakeGenerator>();
 
         StartCoroutine(generateFood());
+        gg = FindObjectOfType<AstarPath>().data.gridGraph;
 
 
     }
