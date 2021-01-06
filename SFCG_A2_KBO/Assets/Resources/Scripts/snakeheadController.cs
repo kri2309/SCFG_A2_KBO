@@ -11,12 +11,17 @@ public class snakeheadController : MonoBehaviour
     foodGenerator fg;
     GridGraph gg;
     GameObject GameOver;
+    GameObject Enemy;
+    public string NextLevel;
+    public string FinishPosition;
+    
 
     private void Start()
     {
         fg = Camera.main.GetComponent<foodGenerator>();
         mysnakegenerator = Camera.main.GetComponent<snakeGenerator>();
         gg = FindObjectOfType<AstarPath>().data.gridGraph;
+        Enemy = GameObject.Find("Enemy Robot");
     }
 
 
@@ -60,25 +65,32 @@ public class snakeheadController : MonoBehaviour
 
         }
 
-       // Debug.Log(mysnakegenerator.hitTail(this.transform.position, mysnakegenerator.snakelength)); 
+        
     }
 
 
     void CheckFinish()
     {
+        
 
         if (mysnakegenerator.snakelength >= 6 && transform.position== new Vector3 (19,2))
         {
 
-            SceneManager.LoadScene("Level 2");
+            SceneManager.LoadScene(NextLevel);
+
         }
+
+        
 
     }
 
     void CheckObstacle()
     {
-        
-        if (!gg.GetNode((int)transform.position.x, (int)transform.position.y).Walkable)
+       //Enemy.transform.position = 
+      
+
+
+        if (!gg.GetNode((int)transform.position.x, (int)transform.position.y).Walkable )
         {
             GameOver = Instantiate(Resources.Load<GameObject>("Prefabs/ButtonPrefab"), new Vector3(0f, 0f), Quaternion.identity);
 
