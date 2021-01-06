@@ -21,7 +21,7 @@ public class snakeheadController : MonoBehaviour
         fg = Camera.main.GetComponent<foodGenerator>();
         mysnakegenerator = Camera.main.GetComponent<snakeGenerator>();
         gg = FindObjectOfType<AstarPath>().data.gridGraph;
-        Enemy = GameObject.Find("Enemy Robot");
+        
     }
 
 
@@ -32,7 +32,7 @@ public class snakeheadController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
             transform.position -= new Vector3(1f,0);
-            fg.eatFood(this.transform.position);
+            fg.eatFood(this.transform.position, mysnakegenerator);
             CheckFinish();
             CheckObstacle();
             mysnakegenerator.hitTail(transform.position, mysnakegenerator.snakelength);
@@ -40,7 +40,7 @@ public class snakeheadController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
             transform.position += new Vector3(1f, 0);
-            fg.eatFood(this.transform.position);
+            fg.eatFood(this.transform.position, mysnakegenerator);
             CheckFinish();
             CheckObstacle();
             mysnakegenerator.hitTail(transform.position, mysnakegenerator.snakelength);
@@ -49,7 +49,7 @@ public class snakeheadController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
             transform.position += new Vector3(0, 1f);
-            fg.eatFood(this.transform.position);
+            fg.eatFood(this.transform.position, mysnakegenerator);
             CheckFinish();
             CheckObstacle();
             mysnakegenerator.hitTail(transform.position, mysnakegenerator.snakelength);
@@ -58,14 +58,14 @@ public class snakeheadController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.DownArrow))
         {
             transform.position -= new Vector3(0, 1f);
-            fg.eatFood(this.transform.position);
+            fg.eatFood(this.transform.position, mysnakegenerator);
             CheckFinish();
             CheckObstacle();
             mysnakegenerator.hitTail(transform.position, mysnakegenerator.snakelength);
 
         }
 
-        
+        CheckHitEnemy();
     }
 
 
@@ -92,16 +92,36 @@ public class snakeheadController : MonoBehaviour
 
         if (!gg.GetNode((int)transform.position.x, (int)transform.position.y).Walkable )
         {
-            GameOver = Instantiate(Resources.Load<GameObject>("Prefabs/ButtonPrefab"), new Vector3(0f, 0f), Quaternion.identity);
 
-            GameOver.GetComponentInChildren<Text>().text = "You Lost!";
+            GameLost();
+        }
+        
+    }
 
-            GameOver.GetComponentInChildren<Button>().onClick.AddListener(
-                    () =>
-                    {
-                        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-                    });
+    void GameLost()
+    {
+        GameOver = Instantiate(Resources.Load<GameObject>("Prefabs/ButtonPrefab"), new Vector3(0f, 0f), Quaternion.identity);
 
+        GameOver.GetComponentInChildren<Text>().text = "You Lost!";
+
+        GameOver.GetComponentInChildren<Button>().onClick.AddListener(
+                () =>
+                {
+                    SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                });
+    }
+
+    void CheckHitEnemy()
+    {
+        if (GameObject.Find("Enemy Robot"))
+        {
+            Enemy = GameObject.Find("Enemy Robot");
+            snakeGenerator sgEnemy = Enemy.GetComponent<snakeGenerator>();
+
+            if (sgEnemy.hitTail(transform.position, sgEnemy.snakelength) || Enemy.transform.position == transform.position)
+            {
+                GameLost();
+            }
         }
         
     }

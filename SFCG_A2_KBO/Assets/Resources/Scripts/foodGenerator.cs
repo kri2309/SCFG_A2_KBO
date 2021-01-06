@@ -52,7 +52,7 @@ public class foodGenerator : MonoBehaviour
         return counter;
     }
 
-    public void eatFood(Vector3 snakeHeadPosition)
+    public void eatFood(Vector3 snakeHeadPosition, snakeGenerator sg)
     {
         positionRecord snakeHeadPos = new positionRecord();
 
@@ -69,7 +69,7 @@ public class foodGenerator : MonoBehaviour
 
             allTheFood.RemoveAt(foodIndex);
 
-            sn.snakelength++;
+            sg.snakelength++;
 
         }
     }

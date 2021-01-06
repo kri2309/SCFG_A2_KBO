@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using Pathfinding;
 using System.Threading;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class EnemySnakeScript : MonoBehaviour
 {
 
-   public snakeGenerator mysnakegenerator;
+   public snakeGenerator mysnakegenerator, sgPlayer;
 
     public float Shpeed = 1;
 
@@ -24,16 +26,19 @@ public class EnemySnakeScript : MonoBehaviour
     GameObject graphParent;
 
     public List<Transform> obstacleNode;
+    GameObject GameOver;
+    foodGenerator fg;
 
     // public GameObject Obstacle; 
 
     // Start is called before the first frame update
     void Start()
     {
-
+        fg = Camera.main.GetComponent<foodGenerator>();
         mysnakegenerator = GetComponent<snakeGenerator>();
 
         target = GameObject.Find("Black player box").transform;
+        sgPlayer = Camera.main.GetComponent<snakeGenerator>();
 
         //the instance of the seeker attached to this game object
         seeker = GetComponent<Seeker>();
@@ -92,6 +97,11 @@ public class EnemySnakeScript : MonoBehaviour
                     mysnakegenerator.savePosition();
                     mysnakegenerator.drawTail(mysnakegenerator.snakelength);
                     t.position = Vector3.MoveTowards(t.position, posns[counter], 1f);
+                    fg.eatFood(this.transform.position, mysnakegenerator);
+                    if (sgPlayer.hitTail(t.position, sgPlayer.snakelength))
+                    {
+                        GameLost();
+                    }
                     //since the enemy is moving, I need to make sure that I am following him
                     pathToFollow = seeker.StartPath(t.position, target.position);
                     //wait until the path is generated
@@ -113,7 +123,19 @@ public class EnemySnakeScript : MonoBehaviour
             yield return null;
         }
     }
+     void GameLost()
+    {
 
+        GameOver = Instantiate(Resources.Load<GameObject>("Prefabs/ButtonPrefab"), new Vector3(0f, 0f), Quaternion.identity);
+
+        GameOver.GetComponentInChildren<Text>().text = "You Lost!";
+
+        GameOver.GetComponentInChildren<Button>().onClick.AddListener(
+                () =>
+                {
+                    SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                });
+    }
 
 }
 
