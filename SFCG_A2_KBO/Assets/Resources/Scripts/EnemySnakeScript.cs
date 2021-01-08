@@ -60,10 +60,6 @@ public class EnemySnakeScript : MonoBehaviour
     }
 
 
-   
-
-
-
     IEnumerator updateGraph()
     {
         while (true)
@@ -90,7 +86,6 @@ public class EnemySnakeScript : MonoBehaviour
 
             for (int counter = 0; counter < posns.Count; counter++)
             {
-                // Debug.Log("Distance: " + Vector3.Distance(t.position, posns[counter]));
                 while (Vector3.Distance(t.position, posns[counter]) >= 0.5f)
                 {
 
@@ -118,7 +113,7 @@ public class EnemySnakeScript : MonoBehaviour
                 pathToFollow = seeker.StartPath(t.position, target.position);
                 yield return seeker.IsDone();
                 posns = pathToFollow.vectorPath;
-                //yield return null;
+                
 
             }
             yield return null;
