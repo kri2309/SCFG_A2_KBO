@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using System.Threading;
+using Pathfinding;
 
 
 public class positionRecord
@@ -60,6 +60,7 @@ public class snakeGenerator : MonoBehaviour
     foodGenerator fgen;
     snakeheadController snakeController;
 
+    GridGraph gg;
 
     int pastpositionslimit = 100;
 
@@ -86,7 +87,7 @@ public class snakeGenerator : MonoBehaviour
     {
 
         snakeheadController snakehead = null;
-
+        gg = FindObjectOfType<AstarPath>().data.gridGraph;
 
         if (!Enemy)
         {
@@ -98,7 +99,8 @@ public class snakeGenerator : MonoBehaviour
             // timerUI = Instantiate(Resources.Load<GameObject>("Prefabs/Timer"), new Vector3(0f, 0f), Quaternion.identity);
 
             //the default value for the timer is started
-            FindObjectOfType<timerManager>().timerStarted = true;
+            if (FindObjectOfType<timerManager>()) { FindObjectOfType<timerManager>().timerStarted = true; }
+           
            // timerUI.GetComponentInChildren<timerManager>().timerStarted = true;
            
            
@@ -148,7 +150,11 @@ public class snakeGenerator : MonoBehaviour
 
     }
 
+    public void ScanGrid()
+    {
 
+        gg.Scan();
+    }
 
     public void savePosition()
     {
@@ -195,13 +201,11 @@ public class snakeGenerator : MonoBehaviour
             //if length = 4, this should give me the last 4 blocks
             for (int snakeblocks = tailStartIndex; snakeblocks > tailEndIndex; snakeblocks--)
             {
-                //prints the past position and its order in the list
-                //Debug.Log(pastPositions[snakeblocks].Position + " " + pastPositions[snakeblocks].PositionOrder);
-
-
 
                 pastPositions[snakeblocks].BreadcrumbBox = Instantiate(breadcrumbBox, pastPositions[snakeblocks].Position, Quaternion.identity);
                 pastPositions[snakeblocks].BreadcrumbBox.GetComponent<SpriteRenderer>().color = snakeColor;
+                pastPositions[snakeblocks].BreadcrumbBox.AddComponent<BoxCollider2D>();
+                pastPositions[snakeblocks].BreadcrumbBox.layer = LayerMask.NameToLayer("Obstacle");
 
             }
 

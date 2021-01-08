@@ -97,6 +97,7 @@ public class EnemySnakeScript : MonoBehaviour
                     mysnakegenerator.savePosition();
                     mysnakegenerator.drawTail(mysnakegenerator.snakelength);
                     t.position = Vector3.MoveTowards(t.position, posns[counter], 1f);
+                    mysnakegenerator.ScanGrid();
                     fg.eatFood(this.transform.position, mysnakegenerator);
                     if (sgPlayer.hitTail(t.position, sgPlayer.snakelength))
                     {

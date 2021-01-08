@@ -94,11 +94,11 @@ public class snakeheadController : MonoBehaviour
 
     void CheckObstacle()
     {
-       //Enemy.transform.position = 
+      
       
 
 
-        if (!gg.GetNode((int)transform.position.x, (int)transform.position.y).Walkable )
+        if (!gg.GetNode((int)transform.position.x, (int)transform.position.y).Walkable || mysnakegenerator.hitTail(transform.position, mysnakegenerator.snakelength))
         {
 
             GameLost();

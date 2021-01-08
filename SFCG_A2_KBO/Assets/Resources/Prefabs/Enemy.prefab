@@ -98,6 +98,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mysnakegenerator: {fileID: 0}
+  sgPlayer: {fileID: 0}
+  Shpeed: 0.5
   target: {fileID: 0}
   obstacleNode: []
 --- !u!114 &6206846842989181690
