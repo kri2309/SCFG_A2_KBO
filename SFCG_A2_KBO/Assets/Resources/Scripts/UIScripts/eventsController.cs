@@ -2,56 +2,50 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 
 public class eventsController : MonoBehaviour
 {
-    GameObject emailInputField, registerButton;
-    string myVar = "hello";
+    
+    public GameObject userInputField,textDisplay;
+    public string theName;
     // Start is called before the first frame update
     void Start()
     {
-        emailInputField = GameObject.Find("emailInputField");
-        registerButton = GameObject.Find("registerButton");
-        
-        //button callback method 1
-        registerButton.GetComponent<Button>().onClick.AddListener(
-            () => //round backets equals and arrow
-            { //curly bracket start
-                Debug.Log("register User here!");
-                Debug.Log(myVar);
-            } //curly bracket    
-         ); //round bracket semi colon
+        if (GameObject.Find("User"))
+        {
+            GameObject.Find("User").GetComponent<Text>().text = "User: " + PlayerPrefs.GetString("name");
+        }
 
-        //button callback method 2
-        registerButton.GetComponent<Button>().onClick.AddListener(registerButtonPressed);
+        if (GameObject.Find("Time") && FindObjectOfType<timerManager>())
+        {
+            GameObject.Find("Time").GetComponent<Text>().text = "Time taken: " + FindObjectOfType<timerManager>().GetTime();
+        }
+
+        if (GameObject.Find("Length"))
+        {
+            GameObject.Find("Length").GetComponent<Text>().text = "Snake length: " + PlayerPrefs.GetInt("snakelength").ToString();
+        }
 
 
-        //button callback method 3
-        registerButton.GetComponent<Button>().onClick.AddListener(
-            delegate { //curly brackets
-                registerButtonPressedWithParam("Hello hello");  //inner method
-                }  //end curly brackets
-            ); //end delegate
-
-        //registering button callbacks
     }
-
-    void registerButtonPressedWithParam(string myparam)
+    public void StoreName()
     {
-        Debug.Log(myparam);
+        theName = userInputField.GetComponent<Text>().text;
+        textDisplay.GetComponent<Text>().text = "Welcome " + theName;
+        PlayerPrefs.SetString("name", theName);
+        StartCoroutine(StartGame());
+
     }
 
-
-    void registerButtonPressed()
+    IEnumerator StartGame()
     {
-        Debug.Log("register user here 2!");
-        Debug.Log(myVar);
+        yield return new WaitForSeconds(2);
+        SceneManager.LoadScene("Level 1");
+
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    
+
 }

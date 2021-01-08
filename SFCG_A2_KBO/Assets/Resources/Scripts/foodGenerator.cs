@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Pathfinding;
+using System.Linq;
 
 public class foodGenerator : MonoBehaviour
 {
@@ -16,12 +17,32 @@ public class foodGenerator : MonoBehaviour
     snakeGenerator sn;
 
     public Vector3 enemyFoodPosition;
-    bool EnemySpawned = false;
+    public bool EnemySpawned = false;
     private GameObject enemyFood;
+    
+
+    public bool IsFar(Vector3 f)
+    {
+        if(getVisibleFood() <= 0)
+        {
+            return true;
+        }
+        if (allTheFood.Count > 0)
+        {
+            List<positionRecord> sortedFoods = allTheFood.OrderBy(
+        x => Vector3.Distance(f, x.Position)
+       ).ToList();
+            bool b = Vector3.Distance(sortedFoods[0].Position, f ) > 4;
+            return b;
+        }
+
+        return false;
+    }
 
     // Start is called before the first frame update
     void Start()
     {
+        
         foodPosition = new positionRecord();
 
         allTheFood = new List<positionRecord>();
@@ -33,8 +54,13 @@ public class foodGenerator : MonoBehaviour
         StartCoroutine(generateFood());
         gg = FindObjectOfType<AstarPath>().data.gridGraph;
 
-        StartCoroutine(SpawnEnemy());
-        GenerateEnemyFood();
+        if (!EnemySpawned)
+        {
+            StartCoroutine(SpawnEnemy());
+            GenerateEnemyFood();
+
+        }
+
 
     }
 
@@ -63,7 +89,7 @@ public class foodGenerator : MonoBehaviour
 
         if (foodIndex != -1 && enemyFoodPosition != snakeHeadPos.Position)
         {
-            // Debug.Log("Eating Food");
+            
 
             Destroy(allTheFood[foodIndex].BreadcrumbBox);
 
@@ -76,13 +102,17 @@ public class foodGenerator : MonoBehaviour
 
     IEnumerator SpawnEnemy()
     {
-        yield return new WaitForSeconds(3);
 
-        GameObject snake = Instantiate(Resources.Load<GameObject>("Prefabs/Enemy"), enemyFoodPosition, Quaternion.identity);
-        snake.name = "Enemy Robot";
-        EnemySpawned = true;
-        Destroy(enemyFood);
-        yield return null;
+        if (!EnemySpawned) {
+            yield return new WaitForSeconds(3);
+
+            GameObject snake = Instantiate(Resources.Load<GameObject>("Prefabs/Enemy"), enemyFoodPosition, Quaternion.identity);
+            snake.name = "Enemy Robot";
+            EnemySpawned = true;
+            Destroy(enemyFood);
+            yield return null;
+        }
+      
 
     }
 
@@ -92,7 +122,7 @@ public class foodGenerator : MonoBehaviour
         {
             if (getVisibleFood() < 6)
             {
-                yield return new WaitForSeconds(Random.Range(1f, 3f));
+                yield return new WaitForSeconds(0.1f);
 
                 foodPosition = new positionRecord();
 
@@ -106,10 +136,10 @@ public class foodGenerator : MonoBehaviour
 
                 foodPosition.Position = randomLocation;
 
-                if (!allTheFood.Contains(foodPosition) && !sn.hitTail(foodPosition.Position, sn.snakelength) && (gg.GetNode((int)randomX, (int)randomY).Walkable))
+                if (!allTheFood.Contains(foodPosition) && !sn.hitTail(foodPosition.Position, sn.snakelength) && (gg.GetNode((int)randomX, (int)randomY).Walkable) && IsFar(new Vector3 (randomX,randomY,0)))
 
                 {
-
+                    yield return new WaitForSeconds(Random.Range(1f, 3f));
                     foodPosition.BreadcrumbBox = Instantiate(foodObject, randomLocation, Quaternion.Euler(0f, 0f, 45f));
 
 

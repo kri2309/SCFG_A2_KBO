@@ -13,7 +13,7 @@ public class snakeheadController : MonoBehaviour
     GameObject GameOver;
     GameObject Enemy;
     public string NextLevel;
-    public string FinishPosition;
+   
     
 
     private void Start()
@@ -21,6 +21,12 @@ public class snakeheadController : MonoBehaviour
         fg = Camera.main.GetComponent<foodGenerator>();
         mysnakegenerator = Camera.main.GetComponent<snakeGenerator>();
         gg = FindObjectOfType<AstarPath>().data.gridGraph;
+
+        if ( NextLevel == "Ending")
+        {
+            mysnakegenerator.snakelength = PlayerPrefs.GetInt("snakelength");
+        }
+        
         
     }
 
@@ -72,10 +78,12 @@ public class snakeheadController : MonoBehaviour
     void CheckFinish()
     {
         
-
+        
         if (mysnakegenerator.snakelength >= 6 && transform.position== new Vector3 (19,2))
         {
 
+            FindObjectOfType<timerManager>().timerStarted = false;
+            PlayerPrefs.SetInt("snakelength", mysnakegenerator.snakelength);
             SceneManager.LoadScene(NextLevel);
 
         }

@@ -85,24 +85,29 @@ public class snakeGenerator : MonoBehaviour
     void Start()
     {
 
+        snakeheadController snakehead = null;
+
+
         if (!Enemy)
         {
+            
             snakeColor = Color.white;
 
             playerBox = Instantiate(Resources.Load<GameObject>("Prefabs/Square"), new Vector3(1, 15), Quaternion.identity);
 
-            timerUI = Instantiate(Resources.Load<GameObject>("Prefabs/Timer"), new Vector3(0f, 0f), Quaternion.identity);
+            // timerUI = Instantiate(Resources.Load<GameObject>("Prefabs/Timer"), new Vector3(0f, 0f), Quaternion.identity);
 
             //the default value for the timer is started
-            timerUI.GetComponentInChildren<timerManager>().timerStarted = true;
-
+            FindObjectOfType<timerManager>().timerStarted = true;
+           // timerUI.GetComponentInChildren<timerManager>().timerStarted = true;
+           
            
 
             playerBox.GetComponent<SpriteRenderer>().color = Color.black;
 
 
             //move the box with the arrow keys
-            snakeheadController snakehead = playerBox.AddComponent<snakeheadController>();
+            snakehead = playerBox.AddComponent<snakeheadController>();
             snakehead.NextLevel = NextLevel;
 
             playerBox.name = "Black player box";
@@ -132,60 +137,33 @@ public class snakeGenerator : MonoBehaviour
 
         breadcrumbBox = Resources.Load<GameObject>("Prefabs/Square");
         pastPositions = new List<positionRecord>();
+        if (!Enemy ) {
+            if (snakehead.NextLevel == "Ending")
+            {
+                snakelength = PlayerPrefs.GetInt("snakelength");
+            }
+        
+        }
         drawTail(snakelength);
 
     }
 
 
 
-
-    // Update is called once per frame
-
-    bool boxExists(Vector3 positionToCheck) //DELETE---------------------------------------------------------------------------------------------------
-    {
-        //foreach position in the list
-
-        foreach (positionRecord p in pastPositions)
-        {
-
-            if (p.Position == positionToCheck)
-            {
-
-                if (p.BreadcrumbBox != null)
-                {
-
-                    //this breaks the foreach so I don't need to keep checking
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-
     public void savePosition()
     {
-        positionRecord currentBoxPos = new positionRecord();
-
-        currentBoxPos.Position = playerBox.transform.position;
-        positionorder++;
-        currentBoxPos.PositionOrder = positionorder;
-        /*
-        if (!boxExists(playerBox.transform.position))
+       
+        if (playerBox)
         {
-            currentBoxPos.BreadcrumbBox = Instantiate(breadcrumbBox, playerBox.transform.position, Quaternion.identity);
+            positionRecord currentBoxPos = new positionRecord();
+            currentBoxPos.Position = playerBox.transform.position;
+            positionorder++;
+            currentBoxPos.PositionOrder = positionorder;
 
-            currentBoxPos.BreadcrumbBox.transform.SetParent(pathParent.transform);
-
-            currentBoxPos.BreadcrumbBox.name = positionorder.ToString();
-
-            currentBoxPos.BreadcrumbBox.GetComponent<SpriteRenderer>().color = Color.red;
-
-            currentBoxPos.BreadcrumbBox.GetComponent<SpriteRenderer>().sortingOrder = -1;
+            pastPositions.Add(currentBoxPos);
         }
-        */
-        pastPositions.Add(currentBoxPos);
+
+    
 
 
     }
@@ -257,7 +235,7 @@ public class snakeGenerator : MonoBehaviour
 
     //if hit tail returns true, the snake has hit its tail
     public bool hitTail(Vector3 headPosition, int length)
-    {
+    { 
         int tailStartIndex = pastPositions.Count - 1;
         int tailEndIndex = tailStartIndex - length;
         

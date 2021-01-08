@@ -8,10 +8,16 @@ public class timerManager : MonoBehaviour
 
     public bool timerStarted;
 
-    float timerValue=0f;
+    int timerValue=0;
 
-    Text timerText;
-    
+    public Text timerText;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        DontDestroyOnLoad(this.gameObject);
+        StartCoroutine(timer());
+    }
 
     IEnumerator timer()
     {
@@ -22,20 +28,17 @@ public class timerManager : MonoBehaviour
                 //measure the time
                 timerValue++;
 
-                float minutes = timerValue / 60f;
-                float seconds = timerValue % 60f;
+                int minutes = timerValue / 60;
+                int seconds = timerValue % 60;
 
                 timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
 
 
-                //code that is running every second
                 yield return new WaitForSeconds(1f);
             }
             else
             {
-                //don't measure the time
-                timerValue = 0f;
-                timerText.text = string.Format("{0:00}:{1:00}", 0f, 0f);
+                timerText.text = "";
                 yield return null;
 
             }
@@ -43,14 +46,15 @@ public class timerManager : MonoBehaviour
         }
     }
 
-    
-    // Start is called before the first frame update
-    void Start()
+    public string GetTime()
     {
-        //the text component attached to THIS object
-        timerText = GetComponent<Text>();
-        StartCoroutine(timer()); 
+        int minutes = timerValue / 60;
+        int seconds = timerValue % 60;
+
+        return string.Format("{0:00}:{1:00}", minutes, seconds);
+
     }
+ 
 
     
 }
