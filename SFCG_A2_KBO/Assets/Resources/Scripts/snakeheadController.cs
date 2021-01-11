@@ -13,6 +13,7 @@ public class snakeheadController : MonoBehaviour
     GameObject GameOver;
     GameObject Enemy;
     public string NextLevel;
+    bool dead = false; 
    
     
 
@@ -26,52 +27,59 @@ public class snakeheadController : MonoBehaviour
         {
             mysnakegenerator.snakelength = PlayerPrefs.GetInt("snakelength");
         }
-        
-        
+
+        dead = false; 
     }
 
-
+    private void FixedUpdate() //calling less than update maybe idk
+    {
+        mysnakegenerator.ScanGrid();
+    }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            transform.position -= new Vector3(1f,0);
-            fg.eatFood(this.transform.position, mysnakegenerator);
-            CheckFinish();
-            CheckObstacle();
-            mysnakegenerator.hitTail(transform.position, mysnakegenerator.snakelength);
-        }
-        if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            transform.position += new Vector3(1f, 0);
-            fg.eatFood(this.transform.position, mysnakegenerator);
-            CheckFinish();
-            CheckObstacle();
-            mysnakegenerator.hitTail(transform.position, mysnakegenerator.snakelength);
+        if (!dead) {
+            if (Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                transform.position -= new Vector3(1f, 0);
+                fg.eatFood(this.transform.position, mysnakegenerator);
+                CheckFinish();
 
-        }
-        if (Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            transform.position += new Vector3(0, 1f);
-            fg.eatFood(this.transform.position, mysnakegenerator);
-            CheckFinish();
+                //mysnakegenerator.hitTail(transform.position, mysnakegenerator.snakelength);
+            }
+            if (Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                transform.position += new Vector3(1f, 0);
+                fg.eatFood(this.transform.position, mysnakegenerator);
+                CheckFinish();
+
+                //mysnakegenerator.hitTail(transform.position, mysnakegenerator.snakelength);
+
+            }
+            if (Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                transform.position += new Vector3(0, 1f);
+                fg.eatFood(this.transform.position, mysnakegenerator);
+                CheckFinish();
+
+                // mysnakegenerator.hitTail(transform.position, mysnakegenerator.snakelength);
+
+            }
+            if (Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                transform.position -= new Vector3(0, 1f);
+                fg.eatFood(this.transform.position, mysnakegenerator);
+                CheckFinish();
+
+                //mysnakegenerator.hitTail(transform.position, mysnakegenerator.snakelength);
+
+            }
+
+            CheckHit();
             CheckObstacle();
-            mysnakegenerator.hitTail(transform.position, mysnakegenerator.snakelength);
-
-        }
-        if (Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            transform.position -= new Vector3(0, 1f);
-            fg.eatFood(this.transform.position, mysnakegenerator);
-            CheckFinish();
-            CheckObstacle();
-            mysnakegenerator.hitTail(transform.position, mysnakegenerator.snakelength);
-
         }
 
-        CheckHitEnemy();
     }
 
 
@@ -100,12 +108,13 @@ public class snakeheadController : MonoBehaviour
 
         if (!gg.GetNode((int)transform.position.x, (int)transform.position.y).Walkable || mysnakegenerator.hitTail(transform.position, mysnakegenerator.snakelength))
         {
-
-            GameLost();
+            dead = true;
+            mysnakegenerator.Death();
+            
         }
         
     }
-
+    /*
     void GameLost()
     {
         GameOver = Instantiate(Resources.Load<GameObject>("Prefabs/ButtonPrefab"), new Vector3(0f, 0f), Quaternion.identity);
@@ -118,8 +127,8 @@ public class snakeheadController : MonoBehaviour
                     SceneManager.LoadScene(SceneManager.GetActiveScene().name);
                 });
     }
-
-    void CheckHitEnemy()
+    */
+    void CheckHit()
     {
         if (GameObject.Find("Enemy Robot"))
         {
@@ -128,8 +137,14 @@ public class snakeheadController : MonoBehaviour
 
             if (sgEnemy.hitTail(transform.position, sgEnemy.snakelength) || Enemy.transform.position == transform.position)
             {
-                GameLost();
+                dead = true;
+                mysnakegenerator.Death();
             }
+        }
+        if(mysnakegenerator.hitTail(transform.position, mysnakegenerator.snakelength))
+        {
+            dead = true;
+            mysnakegenerator.Death();
         }
         
     }

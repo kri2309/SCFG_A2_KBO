@@ -2453,7 +2453,6 @@ GameObject:
   - component: {fileID: 2039588995}
   - component: {fileID: 2039588997}
   - component: {fileID: 2039588996}
-  - component: {fileID: 2039588998}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -2572,20 +2571,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyFoodPosition: {x: 2, y: 17, z: 0}
   EnemySpawned: 0
---- !u!114 &2039588998
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2039588991}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9c1c9834578a6c5429e87b3e04cf6a9b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mysnakegenerator: {fileID: 0}
-  fg: {fileID: 0}
 --- !u!1 &2045815737
 GameObject:
   m_ObjectHideFlags: 0

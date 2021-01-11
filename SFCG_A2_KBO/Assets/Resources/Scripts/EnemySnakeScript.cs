@@ -28,6 +28,8 @@ public class EnemySnakeScript : MonoBehaviour
     public List<Transform> obstacleNode;
     GameObject GameOver;
     foodGenerator fg;
+    LineRenderer followLine;
+    bool showFollow;
 
     // public GameObject Obstacle; 
 
@@ -36,6 +38,7 @@ public class EnemySnakeScript : MonoBehaviour
     {
         fg = Camera.main.GetComponent<foodGenerator>();
         mysnakegenerator = GetComponent<snakeGenerator>();
+        followLine = GetComponent<LineRenderer>();
 
         target = GameObject.Find("Black player box").transform;
         sgPlayer = Camera.main.GetComponent<snakeGenerator>();
@@ -59,6 +62,14 @@ public class EnemySnakeScript : MonoBehaviour
         StartCoroutine(moveTowardsEnemy(this.transform));
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            showFollow = !showFollow;
+        }
+    }
+
 
     IEnumerator updateGraph()
     {
@@ -66,7 +77,7 @@ public class EnemySnakeScript : MonoBehaviour
         {
 
 
-            graphParent.GetComponent<AstarPath>().Scan();
+           graphParent.GetComponent<AstarPath>().Scan();
 
 
             yield return null;
@@ -87,8 +98,7 @@ public class EnemySnakeScript : MonoBehaviour
             for (int counter = 0; counter < posns.Count; counter++)
             {
                 while (Vector3.Distance(t.position, posns[counter]) >= 0.5f)
-                {
-
+                {                    
                     mysnakegenerator.savePosition();
                     mysnakegenerator.drawTail(mysnakegenerator.snakelength);
                     t.position = Vector3.MoveTowards(t.position, posns[counter], 1f);
@@ -104,7 +114,16 @@ public class EnemySnakeScript : MonoBehaviour
                     yield return seeker.IsDone();
                     //if the path is different, update the path that I need to follow
                     posns = pathToFollow.vectorPath;
-
+                    if (showFollow)
+                    {
+                        followLine.enabled = true;
+                        followLine.positionCount = posns.Count;
+                        followLine.SetPositions(posns.ToArray());
+                    }
+                    else
+                    {
+                        followLine.enabled = false;
+                    }
 
                     yield return new WaitForSeconds(Shpeed);
                 }
@@ -113,6 +132,7 @@ public class EnemySnakeScript : MonoBehaviour
                 pathToFollow = seeker.StartPath(t.position, target.position);
                 yield return seeker.IsDone();
                 posns = pathToFollow.vectorPath;
+                
                 
 
             }

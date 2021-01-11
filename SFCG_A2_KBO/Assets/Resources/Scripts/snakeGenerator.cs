@@ -14,7 +14,6 @@ public class positionRecord
     //at which point was I there?
     int positionOrder;
 
-
     GameObject breadcrumbBox;
     public override bool Equals(System.Object obj)
     {
@@ -96,29 +95,16 @@ public class snakeGenerator : MonoBehaviour
 
             playerBox = Instantiate(Resources.Load<GameObject>("Prefabs/Square"), new Vector3(1, 15), Quaternion.identity);
 
-            // timerUI = Instantiate(Resources.Load<GameObject>("Prefabs/Timer"), new Vector3(0f, 0f), Quaternion.identity);
-
-            //the default value for the timer is started
             if (FindObjectOfType<timerManager>()) { FindObjectOfType<timerManager>().timerStarted = true; }
            
-           // timerUI.GetComponentInChildren<timerManager>().timerStarted = true;
-           
-           
-
             playerBox.GetComponent<SpriteRenderer>().color = Color.black;
 
-
-            //move the box with the arrow keys
             snakehead = playerBox.AddComponent<snakeheadController>();
             snakehead.NextLevel = NextLevel;
 
             playerBox.name = "Black player box";
 
-            
-
             fgen = Camera.main.GetComponent<foodGenerator>();
-
-            // StartCoroutine(waitToGenerateFood());
 
 
         }
@@ -169,9 +155,6 @@ public class snakeGenerator : MonoBehaviour
             pastPositions.Add(currentBoxPos);
         }
 
-    
-
-
     }
 
 
@@ -184,19 +167,14 @@ public class snakeGenerator : MonoBehaviour
     }
 
 
-
     public void drawTail(int length)
     {
         clearTail();
 
         if (pastPositions.Count > length)
         {
-            //nope
-            //I do have enough positions in the past positions list
-            //the first block behind the player
             int tailStartIndex = pastPositions.Count - 1;
             int tailEndIndex = tailStartIndex - length;
-
 
             //if length = 4, this should give me the last 4 blocks
             for (int snakeblocks = tailStartIndex; snakeblocks > tailEndIndex; snakeblocks--)
@@ -220,13 +198,8 @@ public class snakeGenerator : MonoBehaviour
                 positionRecord fakeBoxPos = new positionRecord();
                 float ycoord = count * -1;
                 fakeBoxPos.Position = new Vector3(0f, ycoord);
-                // Debug.Log(new Vector3(0f, ycoord));
-                //fakeBoxPos.BreadcrumbBox = Instantiate(breadcrumbBox, fakeBoxPos.Position, Quaternion.identity);
-                //fakeBoxPos.BreadcrumbBox.GetComponent<SpriteRenderer>().color = Color.yellow;
+
                 pastPositions.Add(fakeBoxPos);
-
-
-
 
             }
             firstrun = false;
@@ -235,7 +208,6 @@ public class snakeGenerator : MonoBehaviour
         }
 
     }
-
 
     //if hit tail returns true, the snake has hit its tail
     public bool hitTail(Vector3 headPosition, int length)
@@ -249,18 +221,7 @@ public class snakeGenerator : MonoBehaviour
         {
             if ((headPosition == pastPositions[snakeblocks].Position) && (pastPositions[snakeblocks].BreadcrumbBox != null))
             {
-                Debug.Log("Hit Tail " + this.name);
-
-                GameOver = Instantiate(Resources.Load<GameObject>("Prefabs/ButtonPrefab"), new Vector3(0f, 0f), Quaternion.identity);
-
-                GameOver.GetComponentInChildren<Text>().text = "You Lost!";
-
-                GameOver.GetComponentInChildren<Button>().onClick.AddListener(
-                        () =>
-                        {
-                            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-                        });
-
+                
                 return true;
             }
         }
@@ -269,18 +230,30 @@ public class snakeGenerator : MonoBehaviour
 
     }
 
+    public void Death() {
+        Time.timeScale = 0;
+        Debug.Log("Hit Tail " + this.name);
 
+        GameOver = Instantiate(Resources.Load<GameObject>("Prefabs/ButtonPrefab"), new Vector3(0f, 0f), Quaternion.identity);
+
+        GameOver.GetComponentInChildren<Text>().text = "You Lost!";
+        
+        GameOver.GetComponentInChildren<Button>().onClick.AddListener(
+                () =>
+                {
+                    Time.timeScale = 1;
+                    SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                });
+    }
 
     void clearTail()
     {
         cleanList();
         foreach (positionRecord p in pastPositions)
         {
-            // Debug.Log("Destroy tail" + pastPositions.Count);
             Destroy(p.BreadcrumbBox);
         }
     }
-
 
 
 
