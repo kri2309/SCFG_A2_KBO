@@ -260,8 +260,8 @@ public class snakeGenerator : MonoBehaviour
 
     void Update()
     {
-        if (Input.anyKeyDown && !((Input.GetMouseButtonDown(0)
-            || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2))) && !Input.GetKeyDown(KeyCode.X) && !Input.GetKeyDown(KeyCode.Z) && !Input.GetKeyDown(KeyCode.Space) && !Enemy)
+        if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.UpArrow)
+            || Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.LeftArrow) && !Enemy)
         {
 
             savePosition();
