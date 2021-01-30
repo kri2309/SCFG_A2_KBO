@@ -138,7 +138,7 @@ public class foodGenerator : MonoBehaviour
 
                 if (!allTheFood.Contains(foodPosition) && !sn.hitTail(foodPosition.Position, sn.snakelength) && (gg.GetNode((int)randomX, (int)randomY).Walkable) && IsFar(new Vector3 (randomX,randomY,0)))
 
-                {
+                {   
                     yield return new WaitForSeconds(Random.Range(1f, 3f));
                     foodPosition.BreadcrumbBox = Instantiate(foodObject, randomLocation, Quaternion.Euler(0f, 0f, 45f));
 

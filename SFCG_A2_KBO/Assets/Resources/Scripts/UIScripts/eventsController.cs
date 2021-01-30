@@ -39,6 +39,18 @@ public class eventsController : MonoBehaviour
 
     }
 
+    public void EndGame()
+    {
+
+        Application.Quit();
+    }
+
+    public void StartOver()
+    {
+
+        SceneManager.LoadScene("Starting");
+    }
+
     IEnumerator StartGame()
     {
         yield return new WaitForSeconds(2);
